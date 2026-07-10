@@ -1,48 +1,36 @@
-Temperature-monitoring-system
-Arduino-based temperature monitoring system using an LM35 sensor. Measures ambient temperature in real time, displays readings on the Serial Monitor, and indicates normal and high-temperature conditions using LED indicators.
+#define LM35 A0
+#define RED 7
+#define GREEN 6
 
-Temperature Monitoring System
+void setup() {
+  Serial.begin(9600);
 
-Overview
-This project is an Arduino-based Temperature Monitoring System that uses an LM35 temperature sensor to measure ambient temperature in real time. The measured temperature is displayed on the Arduino Serial Monitor, while LEDs provide a visual indication of normal and high-temperature conditions.
+  pinMode(RED, OUTPUT);
+  pinMode(GREEN, OUTPUT);
+}
 
- Features
-- Real-time temperature monitoring
-- Displays temperature in degrees Celsius
-- Green LED indicates normal temperature
-- Red LED indicates high temperature (60°C or above)
-- Simple and low-cost Arduino project
+void loop() {
+  // Read analog value from LM35
+  int sensorValue = analogRead(LM35);
 
-Components Required
-- Arduino Uno
-- LM35 Temperature Sensor
-- Red LED
-- Green LED
-- 220 Ω Resistors
-- Breadboard
-- Jumper Wires
-- USB Cable
+  // Convert to temperature in Celsius
+  float temperature = (sensorValue * 5.0 * 100.0) / 1023.0;
 
-Pin Connections
+  // Display temperature on Serial Monitor
+  Serial.print("Temperature: ");
+  Serial.print(temperature);
+  Serial.println(" °C");
 
-| Component | Arduino Pin |
-|----------|-------------|
-| LM35 Output | A0 |
-| Red LED | D7 |
-| Green LED | D6 |
+  // LED indication
+  if (temperature >= 60.0) {
+    // High temperature
+    digitalWrite(RED, HIGH);
+    digitalWrite(GREEN, LOW);
+  } else {
+    // Normal temperature
+    digitalWrite(RED, LOW);
+    digitalWrite(GREEN, HIGH);
+  }
 
-Working Principle
-1. The LM35 continuously measures the surrounding temperature.
-2. The Arduino converts the sensor output into degrees Celsius.
-3. The temperature is displayed on the Serial Monitor.
-4. If the temperature is below 60°C, the Green LED turns ON.
-5. If the temperature reaches or exceeds 60°C, the Red LED turns ON to indicate a high-temperature condition.
-
-Programming Language
-- Arduino C/C++
-
-Applications
-- Room temperature monitoring
-- Laboratory temperature monitoring
-- Educational Arduino projects
-- Basic industrial temperature indication
+  delay(500);
+}
